@@ -1,0 +1,35 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - run: ls -a 
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         aws-region: ap-south-1
+
+    - name: Deploy to AWS
+      run: 
+         aws deploy create-deployment --application-name githubapplication --deployment-group-name developmentgroup1 --github-location repository=https://github.com/YogenderJ/awscodedeploy.git,commitId=effe6749ef08e793c9526361a3eead0f9101120b --ignore-application-stop-failures
+
+     
+      
+
